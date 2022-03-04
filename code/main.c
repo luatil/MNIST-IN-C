@@ -10,7 +10,7 @@ typedef float         f32;
 #define false (u8)0
 #endif
 
-#define UINT32_MAX 0xffffffffui32
+#define UINT32_MAX 0xffffffff
 
 #define HEIGHT 28
 #define WIDTH 28
@@ -28,7 +28,7 @@ typedef float         f32;
 #define TESTING_EXAMPLES 10000
 
 #define BATCH_SIZE 10
-#define EPOCHS 1
+#define EPOCHS 5
 
 #define NORMALIZE_PIXEL(px) (1.0f*(px)/255)
 
@@ -385,21 +385,30 @@ int
 main()
 {
     
+#ifdef WIN32    
     char* TrainingLabelsFilename = "..\\mnist\\train-labels.idx1-ubyte";
-    static u8 TrainingLabels[NUMBER_OF_IMAGES];
-    if(!ReadIDX1(TrainingLabelsFilename, TrainingLabels, NUMBER_OF_IMAGES)) return;
-    
     char* TrainingImagesFilename = "..\\mnist\\train-images.idx3-ubyte";
-    static u8 RawImages[NUMBER_OF_IMAGES*HEIGHT*WIDTH];
-    if(!ReadIDX3(TrainingImagesFilename, RawImages, NUMBER_OF_IMAGES, HEIGHT, WIDTH)) return;
-    
     char* TestingLabelsFilename  = "..\\mnist\\t10k-labels.idx1-ubyte";
-    static u8 TestingLabels[NUMBER_OF_TEST_IMAGES];
-    if(!ReadIDX1(TestingLabelsFilename, TestingLabels, NUMBER_OF_TEST_IMAGES)) return;
-    
     char* TestingImagesFilename  = "..\\mnist\\t10k-images.idx3-ubyte";
+#else
+    char* TrainingLabelsFilename = "../mnist/train-labels.idx1-ubyte";
+    char* TrainingImagesFilename = "../mnist/train-images.idx3-ubyte";
+    char* TestingLabelsFilename  = "../mnist/t10k-labels.idx1-ubyte";
+    char* TestingImagesFilename  = "../mnist/t10k-images.idx3-ubyte";
+#endif
+    
+    
+    static u8 TrainingLabels[NUMBER_OF_IMAGES];
+    if(!ReadIDX1(TrainingLabelsFilename, TrainingLabels, NUMBER_OF_IMAGES)) return 0;
+    
+    static u8 RawImages[NUMBER_OF_IMAGES*HEIGHT*WIDTH];
+    if(!ReadIDX3(TrainingImagesFilename, RawImages, NUMBER_OF_IMAGES, HEIGHT, WIDTH)) return 0;
+    
+    static u8 TestingLabels[NUMBER_OF_TEST_IMAGES];
+    if(!ReadIDX1(TestingLabelsFilename, TestingLabels, NUMBER_OF_TEST_IMAGES)) return 0;
+    
     static u8 RawTestImages[NUMBER_OF_TEST_IMAGES*HEIGHT*WIDTH];
-    if(!ReadIDX3(TestingImagesFilename, RawTestImages, NUMBER_OF_TEST_IMAGES, HEIGHT, WIDTH)) return;
+    if(!ReadIDX3(TestingImagesFilename, RawTestImages, NUMBER_OF_TEST_IMAGES, HEIGHT, WIDTH)) return 0;
     
     static f32 W1[INPUT_LAYER_SIZE][SECOND_LAYER_SIZE];
     static f32 W2[SECOND_LAYER_SIZE][OUTPUT_LAYER_SIZE];
