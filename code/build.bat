@@ -3,10 +3,10 @@
 set opts=-FC -GR- -EHa- -nologo -Zi
 set code=%cd%
 
-REM Compile test.cpp
-REM pushd ..\build
-REM cl %opts% %code%\test.cpp -Ftest.exe
-REM popd
+if not exist ..\build (
+	echo Creating Build Folder
+	mkdir ..\build
+)
 
 pushd ..\build
 cl %opts% %code%\main.c -Femain.exe
